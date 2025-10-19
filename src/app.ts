@@ -37,4 +37,8 @@ app.get("/health", (req, res) => {
   res.send("Server is healthy");
 });
 
+import authRouter from "./routes/auth.route";
+
+app.use("/api/auth", authRouter);
+
 export default app;
