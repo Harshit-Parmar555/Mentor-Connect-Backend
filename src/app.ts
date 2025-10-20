@@ -40,9 +40,11 @@ app.get("/health", (req, res) => {
 import authRouter from "./routes/auth.route";
 import mentorRouter from "./routes/mentor.route";
 import slotRouter from "./routes/slot.route";
+import requestRouter from "./routes/request.route";
 
 app.use("/api/auth", authRouter);
 app.use("/api/mentors", mentorRouter);
 app.use("/api/slots", slotRouter);
+app.use("/api/requests", requestRouter);
 
 export default app;
