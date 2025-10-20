@@ -38,7 +38,9 @@ app.get("/health", (req, res) => {
 });
 
 import authRouter from "./routes/auth.route";
+import mentorRouter from "./routes/mentor.route";
 
 app.use("/api/auth", authRouter);
+app.use("/api/mentors", mentorRouter);
 
 export default app;
