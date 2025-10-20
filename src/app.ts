@@ -41,10 +41,12 @@ import authRouter from "./routes/auth.route";
 import mentorRouter from "./routes/mentor.route";
 import slotRouter from "./routes/slot.route";
 import requestRouter from "./routes/request.route";
+import sessionRouter from "./routes/session.route";
 
 app.use("/api/auth", authRouter);
 app.use("/api/mentors", mentorRouter);
 app.use("/api/slots", slotRouter);
 app.use("/api/requests", requestRouter);
+app.use("/api/sessions", sessionRouter);
 
 export default app;
