@@ -54,3 +54,13 @@ export const addSlot = asyncHandler(
   }
 );
 
+export const getSlotsByMentor = asyncHandler(
+  async (req: AuthenticatedRequest, res: Response) => {
+    const mentorId = req.params.mentorId;
+    const slots = await Availability.find({ mentorId });
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, { slots }, "Slots fetched successfully"));
+  }
+);
