@@ -62,3 +62,21 @@ export const approveRequest = asyncHandler(
       );
   }
 );
+
+export const declineRequest = asyncHandler(
+  async (req: AuthenticatedRequest, res: Response) => {
+    const { requestId } = req.body;
+    if (!requestId) {
+      throw new ApiError(400, "Request ID is required", []);
+    }
+    const request = await Request.findById(requestId);
+    if (!request || request.mentorId.toString() !== req.user?._id.toString()) {
+      throw new ApiError(404, "Request not found or cannot be declined", []);
+    }
+    request.status = "canceled";
+    await request.save();
+    return res
+      .status(200)
+      .json(new ApiResponse(200, { request }, "Request declined successfully"));
+  }
+);
