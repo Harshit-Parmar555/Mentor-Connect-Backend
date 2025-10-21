@@ -54,6 +54,36 @@ export const createRequest = asyncHandler(
   }
 );
 
+export const getRequestsForMentor = asyncHandler(
+  async (req: AuthenticatedRequest, res: Response) => {
+    const mentorId = req.user?.id;
 
+    if (!mentorId) {
+      throw new ApiError(401, "Unauthorized", []);
+    }
+    const requests = await Request.find({ mentorId }).populate("slotId");
 
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200, { requests }, "Requests fetched successfully")
+      );
+  }
+);
 
+export const getRequestForStudent = asyncHandler(
+  async (req: AuthenticatedRequest, res: Response) => {
+    const studentId = req.user?.id;
+
+    if (!studentId) {
+      throw new ApiError(401, "Unauthorized", []);
+    }
+    const requests = await Request.find({ studentId }).populate("slotId");
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200, { requests }, "Requests fetched successfully")
+      );
+  }
+);
