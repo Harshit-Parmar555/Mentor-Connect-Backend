@@ -35,7 +35,7 @@ const requestSchema = new mongoose.Schema<IRequest>(
   { timestamps: true }
 );
 
-const Request = mongoose.model<IRequest>("Session", requestSchema);
+const Request = mongoose.model<IRequest>("Request", requestSchema);
 
 export { IRequest };
 export default Request;
