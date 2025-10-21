@@ -4,7 +4,10 @@ interface ISession extends mongoose.Document {
   mentorId: mongoose.Types.ObjectId;
   studentId: mongoose.Types.ObjectId;
   slotId: mongoose.Types.ObjectId;
-  streamToken: string;
+  callId: string;
+  mentorToken: string;
+  studentToken: string;
+  status: "scheduled" | "completed" | "canceled";
   startTime: Date;
   endTime: Date;
   createdAt: Date;
@@ -28,11 +31,23 @@ const sessionSchema = new mongoose.Schema<ISession>(
       ref: "Availability",
       required: true,
     },
-    streamToken: {
+    callId: {
       type: String,
       required: true,
     },
-
+    mentorToken: {
+      type: String,
+      required: true,
+    },
+    studentToken: {
+      type: String,
+      required: true,
+    },
+    status : {
+      type: String,
+      enum: ["scheduled", "completed", "canceled"],
+      default: "scheduled",
+    },
     startTime: {
       type: Date,
       required: true,
