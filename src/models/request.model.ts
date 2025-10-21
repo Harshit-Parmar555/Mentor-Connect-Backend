@@ -28,8 +28,8 @@ const requestSchema = new mongoose.Schema<IRequest>(
     },
     status: {
       type: String,
-      enum: ["scheduled", "completed", "canceled"],
-      default: "scheduled",
+      enum: ["pending", "approved", "canceled"],
+      default: "pending",
     },
   },
   { timestamps: true }
