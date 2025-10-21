@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import dotenv from "dotenv";
@@ -10,6 +11,12 @@ dotenv.config();
 const app = express();
 
 // Middleware setup
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -48,5 +55,8 @@ app.use("/api/mentors", mentorRouter);
 app.use("/api/slots", slotRouter);
 app.use("/api/requests", requestRouter);
 app.use("/api/sessions", sessionRouter);
+
+// global error handler
+
 
 export default app;
