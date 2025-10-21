@@ -13,5 +13,19 @@ export const getAllMentor = asyncHandler(
   }
 );
 
+export const getMentorById = asyncHandler(
+  async (req: Request, res: Response) => {
+    const mentorId = req.params.id;
+    if (!mentorId) {
+      throw new ApiError(400, "Bad Request: Mentor ID is required.");
+    }
+    const mentor = await User.findById(mentorId);
+    if (!mentor || mentor.role !== "mentor") {
+      throw new ApiError(404, "Mentor not found.");
+    }
 
-
+    return res
+      .status(200)
+      .json(new ApiResponse(200, { mentor }, "Mentor fetched successfully"));
+  }
+);
