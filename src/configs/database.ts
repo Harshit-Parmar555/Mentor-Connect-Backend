@@ -1,5 +1,7 @@
 // Import necessary modules
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
 
 // Database connection function
 const connect = async () => {
@@ -25,4 +27,16 @@ const connect = async () => {
   }
 };
 
+// Database disconnection function
+const disconnect = async () => {
+  try {
+    await mongoose.connection.close();
+    console.log("Database connection closed gracefully");
+  } catch (error) {
+    console.error("Error disconnecting from database:", error);
+    throw error;
+  }
+};
+
 export default connect;
+export { connect as connectDB, disconnect as disconnectDB };
