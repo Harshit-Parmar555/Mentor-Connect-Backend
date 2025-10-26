@@ -4,6 +4,8 @@ interface IUser extends mongoose.Document {
   name: string;
   username: string;
   email: string;
+  workingAt?: string;
+  yearsOfExperience?: number;
   profile: string;
   bio: string;
   skills: string[];
@@ -16,12 +18,14 @@ interface IUser extends mongoose.Document {
 const userSchema = new mongoose.Schema<IUser>(
   {
     name: { type: String, required: true },
-    username: { type: String, unique: true ,sparse : true},
+    username: { type: String, unique: true, sparse: true },
     email: { type: String, required: true, unique: true },
+    workingAt: { type: String },
+    yearsOfExperience: { type: Number },
     profile: { type: String },
     bio: { type: String },
     skills: { type: [String], default: [] },
-    role: { type: String, enum: ["mentor", "student"], default :  null},
+    role: { type: String, enum: ["mentor", "student"], default: null },
     onBoarded: { type: Boolean, default: false },
   },
   { timestamps: true }
@@ -29,5 +33,5 @@ const userSchema = new mongoose.Schema<IUser>(
 
 const User = mongoose.model<IUser>("User", userSchema);
 
-export {IUser};
+export { IUser };
 export default User;
