@@ -5,6 +5,7 @@ import ApiError from "../utils/error";
 import asyncHandler from "../utils/async-handler";
 import { auth } from "../configs/firebase";
 import generateToken from "../utils/jwt";
+import { uploadToFirebase } from "../utils/firebase.operations";
 
 interface AuthenticatedRequest extends Request {
   user?: IUser;
@@ -40,18 +41,43 @@ export const logout = asyncHandler(async (req: Request, res: Response) => {
 
 export const onBoardUser = asyncHandler(
   async (req: AuthenticatedRequest, res: Response) => {
-    const { username, bio, skills, role } = req.body;
-    if (!username || !bio || !skills || !role) {
+    const { username, bio, skills, role, workingAt, yearsOfExperience } =
+      req.body;
+    const file = req.file;
+    if (
+      !username ||
+      !bio ||
+      !skills ||
+      !role ||
+      !workingAt ||
+      !yearsOfExperience
+    ) {
       throw new ApiError(400, "All fields are required", []);
     }
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       throw new ApiError(400, "Username already taken", []);
     }
+
+    let profileUrl = "";
+    if (file) {
+      const { publicUrl } = await uploadToFirebase(file);
+      profileUrl = publicUrl;
+    }
+
     const userId = req.user?._id;
     const user = await User.findByIdAndUpdate(
       userId,
-      { username, bio, skills, role, onBoarded: true },
+      {
+        username,
+        bio,
+        skills,
+        role,
+        profile: profileUrl,
+        workingAt,
+        yearsOfExperience,
+        onBoarded: true,
+      },
       { new: true }
     );
     return res
