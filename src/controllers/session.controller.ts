@@ -1,4 +1,4 @@
-import e, { Request as ExpressRequest, Response } from "express";
+import { Request as ExpressRequest, Response } from "express";
 import Request from "../models/request.model";
 import ApiError from "../utils/error";
 import ApiResponse from "../utils/response";
@@ -109,6 +109,30 @@ export const declineRequest = asyncHandler(
     return res
       .status(200)
       .json(new ApiResponse(200, { request }, "Request declined successfully"));
+  }
+);
+
+export const getSessionsForUser = asyncHandler(
+  async (req: AuthenticatedRequest, res: Response) => {
+    const userId = req.user?._id.toString();
+    const role = req.user?.role;
+    let sessions;
+    if (role === "mentor") {
+      sessions = await Session.find({ mentorId: userId })
+        .populate("mentorId", "name username profile email")
+        .populate("studentId", "name username profile email")
+        .sort({ startTime: 1 });
+    } else {
+      sessions = await Session.find({ studentId: userId })
+        .populate("mentorId", "name username profile email")
+        .populate("studentId", "name username profile email")
+        .sort({ startTime: 1 });
+    }
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200, { sessions }, "Sessions fetched successfully")
+      );
   }
 );
 
