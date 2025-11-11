@@ -49,14 +49,15 @@ import mentorRouter from "./routes/mentor.route";
 import slotRouter from "./routes/slot.route";
 import requestRouter from "./routes/request.route";
 import sessionRouter from "./routes/session.route";
+import userRouter from "./routes/user.route";
 
 app.use("/api/auth", authRouter);
 app.use("/api/mentors", mentorRouter);
 app.use("/api/slots", slotRouter);
 app.use("/api/requests", requestRouter);
 app.use("/api/sessions", sessionRouter);
+app.use("/api/users", userRouter);
 
 // global error handler
-
 
 export default app;
