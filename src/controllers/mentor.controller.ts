@@ -29,3 +29,19 @@ export const getMentorById = asyncHandler(
       .json(new ApiResponse(200, { mentor }, "Mentor fetched successfully"));
   }
 );
+
+export const getMentorByUsername = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { username } = req.params;
+    if (!username) {
+      throw new ApiError(400, "Bad Request: Username is required.");
+    }
+    const mentor = await User.findOne({ username, role: "mentor" });
+    if (!mentor) {
+      throw new ApiError(404, "Mentor not found.");
+    }
+    return res
+      .status(200)
+      .json(new ApiResponse(200, { mentor }, "Mentor fetched successfully"));
+  }
+);
