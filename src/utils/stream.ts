@@ -4,17 +4,23 @@ import { v4 as uuidv4 } from "uuid";
 
 export const createStreamUser = async (userId: string, userData: any) => {
   try {
-    await client.upsertUsers([
-      {
-        id: userId,
-        name: userData.name || `User ${userId}`,
-        image: userData.profile || undefined,
-      },
-    ]);
+    const userPayload: any = {
+      id: userId,
+      name: userData.name || `User ${userId}`,
+    };
+    
+    // Only add image if profile exists and is a valid URL
+    if (userData.profile) {
+      userPayload.image = userData.profile.startsWith('http') 
+        ? userData.profile 
+        : undefined;
+    }
+    
+    await client.upsertUsers([userPayload]);
     return true;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating stream user:", error);
-    throw new ApiError(500, "Failed to create stream user");
+    throw new ApiError(500, `Failed to create stream user: ${error.message || 'Unknown error'}`);
   }
 };
 
@@ -29,13 +35,12 @@ export const createVideoCallSession = async (
 
     const callId = uuidv4();
     const call = client.video.call("default", callId);
+    
+    // Create the call without pre-adding members
+    // Members will be added when they join from the client
     await call.getOrCreate({
       data: {
         created_by_id: mentorData.id,
-        members: [
-          { user_id: mentorData.id, role: "admin" },
-          { user_id: studentData.id, role: "user" },
-        ],
         settings_override: {
           audio: {
             mic_default_on: true,
@@ -67,18 +72,18 @@ export const createVideoCallSession = async (
       mentorToken,
       studentToken,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating video call session:", error);
-    throw new ApiError(500, "Failed to create video call session");
+    throw new ApiError(500, `Failed to create video call session: ${error.message || 'Unknown error'}`);
   }
 };
 
 export const generateUserCallToken = (userId: string) => {
   try {
     return client.generateUserToken({ user_id: userId });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error generating user call token:", error);
-    throw new ApiError(500, "Failed to generate user call token");
+    throw new ApiError(500, `Failed to generate user call token: ${error.message || 'Unknown error'}`);
   }
 };
 
@@ -87,8 +92,13 @@ export const endSession = async (callId: string) => {
     const call = client.video.call("default", callId);
     await call.end();
     return true;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error ending video call session:", error);
-    throw new ApiError(500, "Failed to end video call session");
+    // Don't throw error if call is already ended
+    if (error.message?.includes('not found') || error.message?.includes('already ended')) {
+      console.log('Call already ended or not found, continuing...');
+      return true;
+    }
+    throw new ApiError(500, `Failed to end video call session: ${error.message || 'Unknown error'}`);
   }
 };
