@@ -7,7 +7,7 @@ interface ISession extends mongoose.Document {
   callId: string;
   mentorToken: string;
   studentToken: string;
-  status: "scheduled" | "completed" | "canceled";
+  status: "scheduled" | "ongoing" | "completed" | "canceled";
   startTime: Date;
   endTime: Date;
   createdAt: Date;
@@ -45,7 +45,7 @@ const sessionSchema = new mongoose.Schema<ISession>(
     },
     status : {
       type: String,
-      enum: ["scheduled", "completed", "canceled"],
+      enum: ["scheduled", "ongoing", "completed", "canceled"],
       default: "scheduled",
     },
     startTime: {
