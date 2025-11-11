@@ -44,14 +44,7 @@ export const onBoardUser = asyncHandler(
     const { username, bio, skills, role, workingAt, yearsOfExperience } =
       req.body;
     const file = req.file;
-    if (
-      !username ||
-      !bio ||
-      !skills ||
-      !role ||
-      !workingAt ||
-      !yearsOfExperience
-    ) {
+    if (!username || !bio || !skills || !role) {
       throw new ApiError(400, "All fields are required", []);
     }
     const existingUser = await User.findOne({ username });
